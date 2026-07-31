@@ -55,5 +55,5 @@ url.workspace = true
 workspace-hack = { version = "0.1", path = "../workspace-hack" }
 
 [dev-dependencies]
-axum-test-helper.workspace = true
 test-log.workspace = true
+reqwest.workspace = true
