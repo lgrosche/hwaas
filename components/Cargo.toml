@@ -88,7 +88,7 @@ either = { version = "1", features = ["use_std"] }
 embedded-graphics = "0.8.0"
 embedded-hal = "1.0.0-alpha.9"
 enum_dispatch = "0.3"
-error-stack = "0.4"
+error-stack = "0.8"
 error_utils = { path = "contextapi/error_utils/" }
 etherparse = "0.13.0"
 futures = "0.3"

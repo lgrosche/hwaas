@@ -76,10 +76,10 @@ async fn main() -> Result<(), error_stack::Report<ApplicationError>> {
         .build();
 
     let config_file = fs::read_to_string(args.config_file.clone())
-        .attach_printable_lazy(|| format!("Unable to read file: {}", args.config_file))
+        .attach_with(|| format!("Unable to read file: {}", args.config_file))
         .change_context(ApplicationError)?;
     let config = serde_json::from_str::<ContextApiConfig>(&config_file)
-        .attach_printable("The provided config file was not of the expected JSON format")
+        .attach("The provided config file was not of the expected JSON format")
         .change_context(ApplicationError)?;
     let App {
         router,
@@ -91,7 +91,7 @@ async fn main() -> Result<(), error_stack::Report<ApplicationError>> {
 
     let address = format!("{}:{}", args.address, args.port)
         .parse::<SocketAddr>()
-        .attach_printable_lazy(|| {
+        .attach_with(|| {
             format!(
                 "Could not parse a valid socket address from the given address: {} and port: {}",
                 args.address, args.port
@@ -141,7 +141,7 @@ async fn main() -> Result<(), error_stack::Report<ApplicationError>> {
 
     let listener = TcpListener::bind(&address)
         .await
-        .attach_printable_lazy(|| format!("Could not bind tcp listener to address: {}", address))
+        .attach_with(|| format!("Could not bind tcp listener to address: {}", address))
         .change_context(ApplicationError)?;
     let graceful = axum::serve(listener, service).with_graceful_shutdown(async {
         // wait for SIGINT signal to initiate shutdown
@@ -162,8 +162,8 @@ async fn main() -> Result<(), error_stack::Report<ApplicationError>> {
 
     if let Err(e) = graceful.await {
         error!(error.msg = %e, error.dbg = ?e, "error while attempting to gracefully shut down the server");
-        return Err(Report::new(ApplicationError)
-            .attach_printable(format!("could not shut down the server gracefully: {}", e)));
+        return Err(Report::new(ApplicationError))
+            .attach_with(|| format!("could not shut down the server gracefully: {}", e));
     }
 
     Ok(())
