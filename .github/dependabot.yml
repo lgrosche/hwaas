@@ -20,12 +20,7 @@ updates:
       - "lgrosche"
   - package-ecosystem: "cargo"
     directories:
-      - "/components/contextapi"
-      - "/components/hunt"
-      - "/components/net-ctrl"
-      - "/components/remote-hands"
-      - "/components/rpi-status-display"
-      - "/components/ws-gateway"
+      - "/components"
     schedule:
       interval: "daily"
     cooldown:
