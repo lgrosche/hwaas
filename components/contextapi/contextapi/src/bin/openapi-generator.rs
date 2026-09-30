@@ -6,7 +6,7 @@ use bytesize::ByteSize;
 use clap::Parser;
 use context_api_lib::api::get_api;
 use context_api_lib::{ContextApiConfig, WsGatewaySettings};
-use error_stack::{Context, Report, Result, ResultExt};
+use error_stack::{Report, ResultExt};
 use hunt::HuntBuilder;
 use image_api::ImageApiSettings;
 use std::fmt;
@@ -39,10 +39,10 @@ impl fmt::Display for OpenApiGeneratorError {
     }
 }
 
-impl Context for OpenApiGeneratorError {}
+impl core::error::Error for OpenApiGeneratorError {}
 
 /// Print the OpenAPI specification of the Context API.
-fn main() -> Result<(), OpenApiGeneratorError> {
+fn main() -> Result<(), Report<OpenApiGeneratorError>> {
     let args: CliArgs = CliArgs::parse();
 
     let _hunt = HuntBuilder::new()

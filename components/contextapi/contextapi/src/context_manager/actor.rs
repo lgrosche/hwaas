@@ -406,7 +406,7 @@ async fn prepare_context_manager_launch(
         })
         .await
         .change_context(ContextManagerStartupError)
-        .attach_printable("could not load context ids")?;
+        .attach("could not load context ids")?;
 
     // We will log this number later.
     let num_contexts = context_ids.len();
@@ -424,7 +424,7 @@ async fn prepare_context_manager_launch(
         })
         .await
         .change_context(ContextManagerStartupError)
-        .attach_printable("unable to load ids of contexts that should be reset")?;
+        .attach("unable to load ids of contexts that should be reset")?;
 
     let mut resetting_contexts: HashSet<ContextIdBytes> =
         resetting_contexts.into_iter().map(Into::into).collect();
@@ -438,7 +438,7 @@ async fn prepare_context_manager_launch(
         })
         .await
         .change_context(ContextManagerStartupError)
-        .attach_printable("unable to load context lifetimes")?;
+        .attach("unable to load context lifetimes")?;
 
     let mut active_contexts = HashMap::new();
 

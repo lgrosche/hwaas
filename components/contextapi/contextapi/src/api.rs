@@ -163,13 +163,13 @@ impl App {
         let db_facade = DbFacade::new(db_url, max_db_connections)
             .await
             .change_context(AppPreparationError)
-            .attach_printable("could not establish database facade")?;
+            .attach("could not establish database facade")?;
         let db_facade = Arc::new(db_facade);
 
         let image_api_settings = config.image_api_settings.clone();
         let image_handler = ImageHandler::new(image_api_settings.store)
             .map_err(|_| AppPreparationError)
-            .attach_printable("could not construct image handler")?;
+            .attach("could not construct image handler")?;
 
         let net_ctrl = NetCtrlClient::new(config.net_ctrl_base_path.clone());
         let remote_client = RemoteClient::default();
@@ -185,7 +185,7 @@ impl App {
         )
         .await
         .change_context(AppPreparationError)
-        .attach_printable("could not spawn the context manager task")?;
+        .attach("could not spawn the context manager task")?;
 
         let app_state = AppState::new(
             Arc::new(config.clone()),

@@ -4,7 +4,7 @@
 
 use clap::Parser;
 use error_stack::Report;
-use error_stack::{Context, Result, ResultExt};
+use error_stack::ResultExt;
 use net_ctrl_lib::InventoryDummyBackend;
 use net_ctrl_lib::get_api;
 use std::fmt;
@@ -29,11 +29,11 @@ impl fmt::Display for OpenApiGeneratorError {
     }
 }
 
-impl Context for OpenApiGeneratorError {}
+impl core::error::Error for OpenApiGeneratorError {}
 
 /// Print the OpenAPI specification of the NetCtrl API.
 #[tokio::main]
-async fn main() -> Result<(), OpenApiGeneratorError> {
+async fn main() -> Result<(), Report<OpenApiGeneratorError>> {
     let args: CliArgs = CliArgs::parse();
 
     let json =

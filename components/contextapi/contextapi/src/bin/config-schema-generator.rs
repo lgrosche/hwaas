@@ -4,7 +4,7 @@
 
 use clap::Parser;
 use context_api_lib::ContextApiConfig;
-use error_stack::{Context, Report, Result, ResultExt};
+use error_stack::{Report, ResultExt};
 use schemars::schema_for;
 use std::path::PathBuf;
 use std::str::FromStr;
@@ -27,9 +27,9 @@ impl fmt::Display for ConfigSchemaGeneratorError {
     }
 }
 
-impl Context for ConfigSchemaGeneratorError {}
+impl core::error::Error for ConfigSchemaGeneratorError {}
 
-fn main() -> Result<(), ConfigSchemaGeneratorError> {
+fn main() -> Result<(), Report<ConfigSchemaGeneratorError>> {
     let args: CliArgs = CliArgs::parse();
 
     let schema = schema_for!(ContextApiConfig);

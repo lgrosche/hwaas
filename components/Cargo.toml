@@ -60,7 +60,6 @@ async-trait = "0.1.53"
 axum = { version = "0.7", features = ["ws", "macros", "json", "multipart"] }
 axum-extra = { version = "0.9.6", features = ["typed-routing", "typed-header"] }
 axum-test = { version = "16.4.1", features = ["ws"] }
-axum-test-helper = "0.4"
 axum-tracing-opentelemetry = "0.24.0"
 base64 = "0.22.1"
 bytes = "1.11.1"
@@ -89,7 +88,7 @@ either = { version = "1", features = ["use_std"] }
 embedded-graphics = "0.8.0"
 embedded-hal = "1.0.0-alpha.9"
 enum_dispatch = "0.3"
-error-stack = "0.4"
+error-stack = "0.8"
 error_utils = { path = "contextapi/error_utils/" }
 etherparse = "0.13.0"
 futures = "0.3"
@@ -114,7 +113,7 @@ net_ctrl_client_wrapper = { path = "./contextapi/net_ctrl_client_wrapper" }
 nom = "7.1.1"
 opentelemetry = { version = "0.27.1", features = ["trace"] }
 opentelemetry_sdk = "0.27.1"
-paste = { version = "1" }
+pastey = "0.2"
 predicates = "3"
 rand = "0.8.5"
 regex = "1.7.0"

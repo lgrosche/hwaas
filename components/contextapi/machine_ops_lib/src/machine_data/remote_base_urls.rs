@@ -6,7 +6,7 @@
 //! These urls are all of the form `<url>/<peripheral class>` which the types implemented here enforce via JSON schemas and fallible constructors.
 
 use super::{Deserialize, InvalidUri, JsonSchema, Serialize, Uri};
-use paste::paste;
+use pastey::paste;
 use remote_client::RemoteClient;
 
 /// Base address for a remote power endpoint
@@ -210,7 +210,7 @@ mod tests {
         InvalidRemoteUsbBaseUrl, RemoteAuxiliaryBaseUrl, RemotePowerBaseUrl, RemoteSerialBaseUrl,
         RemoteUsbBaseUrl,
     };
-    use paste::paste;
+    use pastey::paste;
 
     /// Generates two tests for the given Uri type. One that checks that parsing the
     /// type has the expected behavior and one that asserts that converting the type

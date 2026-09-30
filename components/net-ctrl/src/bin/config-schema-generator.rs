@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
-use error_stack::{Context, Report, Result, ResultExt};
+use error_stack::{Report, ResultExt};
 use net_ctrl_lib::SwitchMapping;
 use schemars::schema_for;
 use std::path::PathBuf;
@@ -27,9 +27,9 @@ impl fmt::Display for ConfigSchemaGeneratorError {
     }
 }
 
-impl Context for ConfigSchemaGeneratorError {}
+impl core::error::Error for ConfigSchemaGeneratorError {}
 
-fn main() -> Result<(), ConfigSchemaGeneratorError> {
+fn main() -> Result<(), Report<ConfigSchemaGeneratorError>> {
     let args: CliArgs = CliArgs::parse();
 
     let schema = schema_for!(SwitchMapping);
