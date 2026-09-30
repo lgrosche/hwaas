@@ -26,6 +26,8 @@ use hidg::{
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::sync::LazyLock;
+use tokio::sync::Semaphore;
 use tracing::error;
 
 use crate::{
@@ -34,6 +36,17 @@ use crate::{
 };
 
 use super::json_error;
+
+// Multiple browser tabs, shared instances, etc. should NOT spawn new sockets
+// for controlling instances.
+//
+// The LazyLock here gives us initialization on the first access, and the Semaphore lets
+// us limit this to one concurrent connection.
+//
+// This is global state, if we find ourselves using this pattern a few times,
+// perhaps we should instead move this elsewhere.
+static MOUSE_WRITER: LazyLock<Semaphore> = LazyLock::new(|| Semaphore::new(1));
+static KEYBOARD_WRITER: LazyLock<Semaphore> = LazyLock::new(|| Semaphore::new(1));
 
 // Only exists for serde default usage.
 // Waiting for serde to enable `default_value` or alike.
@@ -294,6 +307,19 @@ async fn handle_keyboard_report_socket<T: UsbConfigurable>(
 }
 
 async fn keyboard_report_socket<T: UsbConfigurable>(state: T, mut ws: WebSocket) {
+    let Ok(_permit) = KEYBOARD_WRITER.try_acquire() else {
+        tracing::warn!(
+            "Could not acquire lock on KEYBOARD_WRITER. Perhaps this is already in use?"
+        );
+        let _ = ws
+            .send(Message::Close(Some(CloseFrame {
+                code: 1008, // Policy Violation
+                reason: "keyboard is already controlled by another connection".into(),
+            })))
+            .await;
+        return;
+    };
+
     while let Some(msg) = ws.recv().await {
         let msg = match msg {
             Ok(msg) => msg,
@@ -357,10 +383,12 @@ async fn keyboard_report_socket<T: UsbConfigurable>(state: T, mut ws: WebSocket)
                         "an error occurred when writing to keyboard"
                 );
                 let _ = ws
-                    .send(error_msg(
-                        "an error occurred when writing to keyboard".to_string(),
-                    ))
+                    .send(Message::Close(Some(CloseFrame {
+                        code: 1011, // internal error
+                        reason: "keyboard write failed".into(),
+                    })))
                     .await;
+                return;
             }
         } else {
             let mut err_msg = "";
@@ -477,6 +505,17 @@ fn handle_mouse_websocket_doc(op: TransformOperation) -> TransformOperation {
 
 /// The function responsible for handling and firing off WS mouse events
 async fn mouse_socket<T: UsbConfigurable>(state: T, mut ws: WebSocket) {
+    let Ok(_permit) = MOUSE_WRITER.try_acquire() else {
+        tracing::warn!("Could not acquire lock on MOUSE_WRITER. Perhaps this is already in use?");
+        let _ = ws
+            .send(Message::Close(Some(CloseFrame {
+                code: 1008, // Policy Violation
+                reason: "mouse is already controlled by another connection".into(),
+            })))
+            .await;
+        return;
+    };
+
     while let Some(msg) = ws.recv().await {
         let msg = match msg {
             Ok(msg) => msg,
@@ -529,6 +568,7 @@ async fn mouse_socket<T: UsbConfigurable>(state: T, mut ws: WebSocket) {
                     reason: "mouse write failed".into(),
                 })))
                 .await;
+            return;
         };
     }
 }

@@ -18,6 +18,9 @@ export function useKeyboardWebsocket() {
   const activeMachineName = ref<string | null>(null)
 
   const wss = ref<WebSocket | null>(null)
+  // Set when the server closes the connection for a reason other than us
+  // tearing it down ourselves (e.g. another tab already controls the keyboard).
+  const closeReason = ref<string | null>(null)
 
   const setActiveMachineName = (machineName: string) => {
     activeMachineName.value = machineName
@@ -33,33 +36,39 @@ export function useKeyboardWebsocket() {
 
   // Lifecycle hooks
 
-  watch(activeBaseUrl, () => buildWebSocket(), { immediate: true }) // Fires at start or on activeBaseUrl change
+  watch(activeBaseUrl, () => buildWebSocket())
 
   onUnmounted(() => unsubscribe())
 
   function buildWebSocket() {
-    console.log('buildWebSocket')
-
     if (wss.value) {
       unsubscribe()
     }
 
     if (!activeBaseUrl.value) {
-      console.error('No active baseUrl set!')
       return
     }
 
-    wss.value = new WebSocket(activeBaseUrl.value)
-    wss.value.binaryType = 'arraybuffer'
+    const ws = new WebSocket(activeBaseUrl.value)
+    ws.binaryType = 'arraybuffer'
 
-    // We actually only care about error messages here, as there is no useful information to receive
-    wss.value.addEventListener('error', (e) => console.error(e))
+    ws.addEventListener('error', (e) => console.error(e))
+    ws.addEventListener('close', (e) => {
+      // Ignore events from a socket we've already superseded or torn down.
+      if (wss.value !== ws) return
+      wss.value = null
+      if (e.code !== 1000) {
+        closeReason.value = e.reason || `keyboard websocket closed unexpectedly (code ${e.code})`
+        console.error(closeReason.value)
+      }
+    })
+
+    wss.value = ws
   }
 
   function sendMessage(msg: KeyboardReport) {
-    console.log('sendMessage', msg)
-    if (!wss.value) {
-      console.error('No existing web socket found')
+    if (!wss.value || wss.value.readyState !== WebSocket.OPEN) {
+      console.warn('No open web socket found')
       return
     }
     wss.value.send(JSON.stringify(msg))
@@ -67,11 +76,13 @@ export function useKeyboardWebsocket() {
 
   function unsubscribe() {
     wss.value?.close()
+    wss.value = null
   }
 
   return {
     sendMessage,
     setActiveMachineAndPort: setActiveMachineName,
     unsubscribe,
+    closeReason,
   }
 }
