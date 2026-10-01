@@ -25,6 +25,7 @@ _: {
         generate-ci = {
           type = "app";
           program = "${generator.generateCi}/bin/generate-ci";
+          meta.description = "Generate ci.yml file for GitHub";
         };
       };
       checks = {

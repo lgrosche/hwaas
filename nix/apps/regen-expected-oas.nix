@@ -17,6 +17,7 @@ _: {
       apps.regen-expected-oas = {
         type = "app";
         program = "${script}/bin/regen-expected-oas";
+        meta.description = "Regenerate expected OpenAPI spec";
       };
     };
 }

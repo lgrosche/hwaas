@@ -14,6 +14,7 @@ _: {
       apps.generate-net-ctrl-client = {
         type = "app";
         program = "${script}/bin/generate-net-ctrl-client";
+        meta.description = "Generate net-ctrl-client";
       };
     };
 }

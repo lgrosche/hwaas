@@ -54,7 +54,7 @@
           pkgs.openssl
           pkgs.sqlite
         ]
-        ++ lib.optionals pkgs.stdenv.isDarwin [
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
           # Additional darwin specific inputs can be set here
           pkgs.libiconv
           pkgs.darwin.apple_sdk.frameworks.Security

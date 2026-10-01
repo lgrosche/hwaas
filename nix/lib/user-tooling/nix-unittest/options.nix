@@ -80,7 +80,7 @@ in
       '';
       default =
         let
-          maxLen = lib.lists.fold lib.trivial.max (-1) (
+          maxLen = lib.lists.foldr lib.trivial.max (-1) (
             builtins.map ({ message, ... }: builtins.stringLength message) config.results
           );
           desiredLen = maxLen + 1;

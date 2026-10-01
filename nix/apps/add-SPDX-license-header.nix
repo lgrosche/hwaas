@@ -39,6 +39,7 @@ _: {
       apps.add-SPDX-license-header = {
         type = "app";
         program = "${script}/bin/add-SPDX-license-header";
+        meta.description = "Add SPDX license headers to all supported files";
       };
     };
 }

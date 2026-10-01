@@ -7,6 +7,7 @@ _: {
     apps.ws-proxy-client = {
       type = "app";
       program = "${config.packages.ws-proxy-client}/bin/ws-proxy-client";
+      meta.description = "ws-proxy-client app";
     };
   };
 }

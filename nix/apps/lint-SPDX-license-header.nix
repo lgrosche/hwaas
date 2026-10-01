@@ -15,6 +15,7 @@ _: {
       apps.lint-SPDX-license-header = {
         type = "app";
         program = "${script}/bin/lint-SPDX-license-header";
+        meta.description = "Linter for SPDX license headers";
       };
     };
 }
