@@ -479,8 +479,11 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           name: secunet-ag-hwaas
       - if: always()
-        name: check verify-ci
-        run: nix build --accept-flake-config -L --show-trace '.#checks.x86_64-linux.verify-ci'
+        name: check verify-ci-generation
+        run: nix build --accept-flake-config -L --show-trace '.#checks.x86_64-linux.verify-ci-generation'
+      - if: always()
+        name: check verify-ci-zizmor
+        run: nix build --accept-flake-config -L --show-trace '.#checks.x86_64-linux.verify-ci-zizmor'
   check-vue-client:
     name: 'Check: vue-client'
     needs:
