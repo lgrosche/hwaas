@@ -63,7 +63,12 @@ testers.nixosTest {
         ))
 
     start_all()
+
+    sut.wait_for_unit("echo-server.service")
+    sut.wait_for_open_port(12345)
     sut.wait_for_unit("remote-auxiliary.service")
+    sut.wait_for_open_port(8080)
+
     base_url = "http://localhost:${toString port}"
 
     with subtest("GET all"):

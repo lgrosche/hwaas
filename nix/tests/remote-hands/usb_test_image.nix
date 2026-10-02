@@ -70,7 +70,7 @@ let
         nixos.enable = false;
       };
 
-      isoImage.isoName = lib.mkForce isoName;
+      image.fileName = lib.mkForce isoName;
     };
 
   myNixos = nixos [ myisoconfig ];

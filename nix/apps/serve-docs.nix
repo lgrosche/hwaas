@@ -14,6 +14,7 @@ _: {
         ${pkgs.pnpm_10}/bin/pnpm i
         exec ${pkgs.pnpm_10}/bin/pnpm dev
       ''}";
+      meta.description = "serve documentation";
     };
   };
 }

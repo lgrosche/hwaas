@@ -14,5 +14,5 @@
         --bind 127.0.0.1 \
         --directory ${docs}
   ''}";
-  meta.description = "server documentation localy";
+  meta.description = "serve documentation locally";
 }

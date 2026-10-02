@@ -52,10 +52,6 @@ in
     users = {
       mutableUsers = false;
       users = {
-        # For ease of debugging the VM as the `root` user
-        # If set to an empty string (""), this user will be able to log in without being asked for a password
-        root.hashedPassword = "";
-
         # Create a system user that matches the database user so that we
         # can use peer authentication.  The tutorial defines a password,
         # but it's not necessary.
