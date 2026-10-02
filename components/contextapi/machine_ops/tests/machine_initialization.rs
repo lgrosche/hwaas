@@ -121,7 +121,7 @@ async fn machine_initialization_works() -> Result<(), Box<dyn std::error::Error>
     remote_serial_mock
         .register(Mock::given(any()).respond_with(|req: &wiremock::Request| {
             assert_eq!(req.method.to_string().to_lowercase(), "post");
-            assert_eq!(req.url.path(), format!("/serial/reset"));
+            assert_eq!(req.url.path(), "/serial/reset".to_string());
             ResponseTemplate::new(200)
         }))
         .await;
