@@ -37,6 +37,9 @@ let
     {
       name = "Check out repository";
       uses = checkoutAction;
+      "with" = {
+        persist-credentials = false;
+      };
     }
     {
       name = "Install Nix";
